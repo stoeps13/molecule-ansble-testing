@@ -1,0 +1,19 @@
+---
+- name: Verify
+  hosts: molecule
+  gather_facts: false
+  tasks:
+    - name: "Download successful"
+      ansible.builtin.stat:
+        path: "/opt/IBM/install/software/agent.installer.linux.gtk.x86_64_1.9.2009.20240621_1105.zip"
+      register: file_stat
+    - name: Debug
+      ansible.builtin.debug:
+        msg: "{{ file_stat.stat }}"
+        verbosity: 2
+    - name: "check if download was successful"
+      ansible.builtin.assert:
+        that:
+          - file_stat.stat.exists == True
+        success_msg: "Download exists"
+        fail_msg: "Download failed"

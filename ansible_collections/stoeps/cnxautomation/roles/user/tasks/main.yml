@@ -1,0 +1,26 @@
+---
+# tasks file for user
+- name: Check variables
+  ansible.builtin.debug:
+    msg: "{{ _generic }}"
+    verbosity: 2
+
+- name: Install needed packages
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - sudo
+
+- name: Create users
+  ansible.builtin.user:
+    name: "{{ item }}"
+    shell: /bin/bash
+    create_home: true
+    groups: wheel
+    uid: "{{ _generic.run.user.id }}"
+    state: present
+    comment: "WebSphere User"
+  become: true
+  loop:
+    - "{{ _generic.run.user.name }}"

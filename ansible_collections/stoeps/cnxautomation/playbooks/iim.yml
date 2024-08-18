@@ -1,0 +1,26 @@
+---
+- name: Create Useraccounts
+  hosts: iim
+  gather_facts: true
+  tasks:
+    - name: Include generic variables
+      ansible.builtin.include_vars:
+        file: "{{ item }}"
+      loop:
+        - ../roles/generic/defaults/main.yml
+
+    - name: WebSphere users
+      ansible.builtin.import_role:
+        name: stoeps.cnxautomation.user
+        tasks_from: main.yml
+      when:
+        - _generic.root.available |bool
+
+- name: Install Installation Manager to all iim hosts
+  hosts: iim
+  gather_facts: false
+  tasks:
+    - name: Testing Role
+      ansible.builtin.import_role:
+        name: stoeps.cnxautomation.iim
+        tasks_from: main.yml

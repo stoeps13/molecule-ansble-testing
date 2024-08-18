@@ -1,0 +1,10 @@
+---
+# tasks file for my_role
+- name: Task is running from within the role
+  ansible.builtin.debug:
+    msg: "This is a task from my_role."
+
+- name: "Copy file in /file.txt"
+  copy:
+    src: file.txt
+    dest: /file.txt

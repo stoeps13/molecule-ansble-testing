@@ -1,0 +1,59 @@
+---
+# tasks file for iim
+# TODO: Chcek the installed version number, if already installed
+- name: Check if iim is already installed
+  ansible.builtin.shell: |
+    {{ _generic.install_root.dir }}/InstallationManager/eclipse/tools/imcl && echo "Already installed" || echo "Not installed"
+  register: iim_installed
+  changed_when: "'changed' in iim_installed.stdout"
+
+- name: Download and install installation manager
+  when:
+    - "'Not installed' in iim_installed.stdout"
+  block:
+    - name: Check if installer file is available
+      ansible.builtin.uri:
+        url: "http://{{ _generic.install_server.name }}:{{ _generic.install_server.port }}/{{ _iim.install_filename }}"
+        method: HEAD
+
+    - name: Install needed software packages
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - unzip
+      become: true
+      when:
+        - _generic.root.available |bool
+
+    - name: Create folder for installation package
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+        owner: "{{ _generic.run.user.name }}"
+      loop:
+        - "{{ _generic.install_src.dir }}"
+        - "{{ _generic.extracted_src.dir }}/iim"
+      become: true
+      when:
+        - _generic.root.available |bool
+
+    - name: Check if package already downloaded
+      ansible.builtin.stat:
+        path: "{{ _generic.install_src.dir }}/{{ _iim.install_filename }}"
+      register: iim_install_stat
+
+    - name: Download installer
+      ansible.builtin.get_url:
+        url: "http://{{ _generic.install_server.name }}:{{ _generic.install_server.port }}/{{ _iim.install_filename }}"
+        dest: "{{ _generic.install_src.dir }}/{{ _iim.install_filename }}"
+        mode: '0660'
+      when:
+        - not iim_install_stat.stat.exists
+
+    - name: Extract downloaded software
+      ansible.builtin.unarchive:
+        src: "{{ _generic.install_src.dir }}/{{ _iim.install_filename }}"
+        dest: "{{ _generic.extracted_src.dir }}/iim/"
+        remote_src: true

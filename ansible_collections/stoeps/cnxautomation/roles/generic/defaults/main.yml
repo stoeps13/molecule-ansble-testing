@@ -1,0 +1,19 @@
+---
+# defaults file for generic
+_generic:
+  extracted_src:
+    dir:  "{{ generic.extracted_src.dir | default('/opt/IBM/install/extracted') }}"
+  install_server:
+    name: "{{ groups['install_server'][0] }}"
+    port: "{{ generic.install_server.port | default('8081') }}"
+  install_src:
+    dir: "{{ generic.install_src.dir | default('/opt/IBM/install/software') }}"
+  install_root:
+    dir: "{{ generic.install.root | default('/opt/HCL') }}"
+  root:
+    available: "{{ generic.root.available | default(true) }}"
+  run:
+    user:
+      id: "{{ generic.run.user.id | default(2500) }}"
+      name: "{{ generic.run.user.name | default('cnxwas') }}"
+

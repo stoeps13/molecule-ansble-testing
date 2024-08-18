@@ -1,0 +1,9 @@
+---
+# defaults file for iim
+_iim:
+  install_target:
+    dir: "{{ iim.install_target.dir | default('/opt/IBM/InstallationManager') }}"
+    shared_dir: "{{ iim_shared_dir | default('/opt/IBM/IMShared') }}"
+  version: "{{ iim_version | default('1.9.2009.20240621_1105') }}"
+  install_filename: "{{ iim_installer | default('agent.installer.linux.gtk.x86_64_1.9.2009.20240621_1105.zip') }}"
+

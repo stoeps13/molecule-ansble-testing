@@ -1,0 +1,3 @@
+---
+- name: Text IIM installation
+  ansible.builtin.import_playbook: stoeps.cnxautomation.iim
